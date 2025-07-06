@@ -7,11 +7,9 @@ authors = [
 ]
 dependencies = [
     "astroid~=3.1",
-    "ruff>=0.4.9",
+    "pylint~=3.1",
     "aiohttp~=3.9",
     "setuptools>=69.5.1",
-    "pyrebase-air>=4.9.1",
-    "pre-commit>=3.7.0",
 ]
 dynamic = ['version']
 requires-python = ">=3.12.4"
@@ -23,11 +21,19 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
 ]
+
+[tool.pdm.dependencies]
+pyrebase-air = {git = "https://github.com/rchiechi/pyrebase-air.git", ref = "urllib3-v2-fix"}
+astroid = "~=3.1"
+pylint = "~=3.1"
+aiohttp = "~=3.9"
+setuptools = ">=69.5.1"
+
 [tool.pdm]
 distribution = false
 
 [tool.pdm.scripts]
-lint = "ruff check"
+lint = "pylint --rcfile .pylintrc smarter_client"
 test = "pytest -v  --doctest-modules --junitxml=coverage/test-results.xml --cov --cov-report=xml --cov-report=html"
 version = "python -c 'import smarter_client.version; print(smarter_client.version.version_info())'"
 
@@ -49,7 +55,10 @@ testing = [
 ]
 
 
-build = ["build", "mypy>=1.11.2"]
+build = [
+    "build",
+    "mypy>=1.11.2",
+]
 
 [project.urls]
 Homepage = "https://www.github.com/kbirger/smarter-kettle-client"
@@ -59,42 +68,3 @@ Source = "https://www.github.com/kbirger/smarter-kettle-client"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.pytest.ini_options]
-asyncio_mode = "auto"
-pythonpath = "."
-addopts = "--ignore smarter_client/managed_devices"
-
-[tool.ruff.format]
-quote-style = "double"
-
-[tool.ruff.lint]
-select = ["D", "E", "F", "W", "I", "UP", "R"]
-ignore = ["D203", "D213"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "pep257"
-
-[tool.ruff]
-target-version = "py312"
-src = ["custom_components"]
-exclude = [
-    ".venv",
-    ".git",
-    ".tox",
-    "docs",
-    "venv",
-    "bin",
-    "lib",
-    "deps",
-    "build",
-]
-line-length = 120
-
-[tool.ruff.lint.pyupgrade]
-keep-runtime-typing = true
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = ["D", "E712"]
-"smarter_client/managed_devices/*" = ["D"]
-"*" = ["D"]
